@@ -1,0 +1,47 @@
+<!-- templates/profile.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 class="title">
+    Hi, {{ username }}!
+</h1>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var socket = io.connect('http://127.0.0.1:15400');
+        socket.on('connect', function () {
+            socket.send('{{ username }} has connected!');
+        });
+        socket.on('message', function (msg) {
+            $("#messages").append('<li>' + msg + '</li>');
+        });
+        $('#sendbutton').on('click', function () {
+            socket.send('{{ username }}: ' + $('#myMessage').val());
+            $('#myMessage').val('');
+        });
+    });
+</script>
+
+<section class="hero is-info">
+<div class="hero-body">
+    <div class="container">
+        <div class="card">
+            <div class="card-content">
+                <div class="content">
+                    <div class="control has-icons-left has-icons-right">                     
+						<ul class="block" style="list-style: none" id="messages"></ul>
+						<input class="input is-large" type="text" id="myMessage">
+						<button class="button is-block is-info is-large is-fullwidth" id="sendbutton">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+</body>
+</html>
+
+{% endblock %}
